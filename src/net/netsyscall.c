@@ -1700,6 +1700,11 @@ static sysreturn netsock_connect(struct sock *sock, struct sockaddr *addr,
     }
     if (ret)
         goto out;
+    if ip_addr_isany(&ipaddr) {
+        msg_warn("attempt to connect to 0.0.0.0/[::]; ignored\n");
+        ret = -EINVAL;
+        goto out;
+    }
     netsock_lock(s);
     if (s->sock.type == SOCK_STREAM) {
         if (s->info.tcp.state == TCP_SOCK_IN_CONNECTION) {
